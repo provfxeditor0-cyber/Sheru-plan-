@@ -89,6 +89,7 @@ input::placeholder{color:#a8977a}
     <div class="clay box">
       <h3 class="gt">ADD PRODUCT</h3>
       <div class="up"><div class="pimg" id="pPrev"><i class="fa-solid fa-image"></i></div><div><button class="btn" id="pPick" type="button"><i class="fa-solid fa-upload"></i> UPLOAD IMAGE</button><input id="pFile" type="file" accept="image/*" class="hidden"></div></div>
+      <p class="cnt" style="margin-bottom:10px">Products added here show a BUY button in the app. The buyer enters a Telegram username.</p>
       <input id="pName" type="text" maxlength="40" placeholder="NAME">
       <input id="pPrice" type="text" inputmode="decimal" placeholder="PRICE in ₹ (USDT price = ₹ ÷ 100)">
       <input id="pDays" type="text" inputmode="numeric" placeholder="DAYS (optional, leave empty for no expiry)">
@@ -150,10 +151,10 @@ const D = {users:{}, deps:{}, plans:{}, prods:{}, aT:{}, uT:{}};
 const vals = o => Object.keys(o || {}).map(k => Object.assign({_k:k}, o[k]));
 const st = r => { const s = String(r.status || '').toLowerCase(); return OK.indexOf(s) > -1 ? 'ok' : (BAD.indexOf(s) > -1 ? 'bad' : 'p'); };
 const DEFAULTS = [
-  {id:'p15', name:'15 DAYS SUBSCRIPTION',  priceInr:200,  u:2,  d:15, order:1},
-  {id:'p25', name:'25 DAYS SUBSCRIPTION',  priceInr:300,  u:3,  d:25, order:2},
-  {id:'m2',  name:'2 MONTHS SUBSCRIPTION', priceInr:500,  u:5,  m:2,  order:3},
-  {id:'m5',  name:'5 MONTHS SUBSCRIPTION', priceInr:1000, u:10, m:5,  order:4}
+  {id:'p15', name:'15 DAYS SUBSCRIPTION',  priceInr:200,  u:2,  d:15, yt:true, order:1},
+  {id:'p25', name:'25 DAYS SUBSCRIPTION',  priceInr:300,  u:3,  d:25, yt:true, order:2},
+  {id:'m2',  name:'2 MONTHS SUBSCRIPTION', priceInr:500,  u:5,  m:2,  yt:true, order:3},
+  {id:'m5',  name:'5 MONTHS SUBSCRIPTION', priceInr:1000, u:10, m:5,  yt:true, order:4}
 ];
 
 /* ---- login ---- */
@@ -231,12 +232,12 @@ function render(){
   prods.sort((a, b) => (a.order || 0) - (b.order || 0));
   $('#pList').innerHTML = prods.length ? prods.map(p =>
     '<div class="item"><div class="pimg">' + (okImg(p.img) ? '<img src="' + p.img + '" alt="">' : '<i class="fa-brands fa-youtube"></i>') + '</div>' +
-    '<div class="m"><b>' + esc(p.name) + '</b><small>₹' + esc(p.priceInr) + ' · $' + esc(p.u) + (p.d ? ' · ' + esc(p.d) + ' days' : (p.m ? ' · ' + esc(p.m) + ' months' : ' · no expiry')) + '</small></div>' +
+    '<div class="m"><b>' + esc(p.name) + '</b><small>₹' + esc(p.priceInr) + ' · $' + esc(p.u) + (p.d ? ' · ' + esc(p.d) + ' days' : (p.m ? ' · ' + esc(p.m) + ' months' : ' · no expiry')) + ' · ' + ((p.yt === true || ['p15','p25','m2','m5'].indexOf(p._k) > -1) ? 'CONNECT button' : 'BUY button') + '</small></div>' +
     '<div class="a"><button class="btn sm no" data-del="products/' + esc(p._k) + '" data-what="product">DELETE</button></div></div>').join('') : '<div class="empty">No products. Add one above.</div>';
 
   const pl = []; Object.keys(D.plans).forEach(u => vals(D.plans[u]).forEach(p => pl.push(p))); pl.sort((a, b) => (b.boughtAt || 0) - (a.boughtAt || 0));
   $('#plList').innerHTML = pl.length ? pl.slice(0, 150).map(p =>
-    '<div class="item"><div class="m"><b>' + esc(p.userName || 'User') + ' · ' + esc(p.name) + '</b><small>Bought ' + fdate(p.boughtAt) + ' · valid till ' + (p.expiresAt ? fdate(p.expiresAt) : 'no expiry') + '</small></div><span class="tag t-p">' + (SYM[p.cur] || '') + esc(p.price) + '</span></div>').join('') : '<div class="empty">No plans bought yet</div>';
+    '<div class="item"><div class="m"><b>' + esc(p.userName || 'User') + ' · ' + esc(p.name) + '</b><small>Bought ' + fdate(p.boughtAt) + ' · valid till ' + (p.expiresAt ? fdate(p.expiresAt) : 'no expiry') + (p.tgUser ? ' · TELEGRAM: @' + esc(p.tgUser) : '') + '</small></div><span class="tag t-p">' + (SYM[p.cur] || '') + esc(p.price) + '</span></div>').join('') : '<div class="empty">No plans bought yet</div>';
 
   const aT = vals(D.aT).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
   $('#aTasks').innerHTML = aT.length ? aT.map(t =>
