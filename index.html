@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f1e7d4">
+<title>SHERU PLAN'S Admin</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Fredoka:wght@500;600;700&family=Cinzel:wght@800&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+<style>
+:root{--bg:#f1e7d4;--cl:#f8f0e0;--ink:#3b2e1a;--mut:#8b7a5e;--goldd:#b87708;--red:#d93a52;--ok:#1f9e6e;
+--out:9px 9px 20px rgba(150,120,70,.30),-7px -7px 16px rgba(255,255,255,.95);
+--in:inset 3px 3px 7px rgba(255,255,255,.95),inset -4px -4px 9px rgba(160,125,70,.18);
+--press:inset 5px 5px 11px rgba(150,120,70,.34),inset -5px -5px 10px rgba(255,255,255,.95)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{min-height:100vh;font-family:'Nunito',system-ui,sans-serif;font-weight:600;color:var(--ink);background:radial-gradient(40% 30% at 0% 0%,#ffe0c4,transparent 70%),radial-gradient(40% 32% at 100% 40%,#d9ecff,transparent 70%),radial-gradient(40% 30% at 20% 100%,#d6f5e6,transparent 70%),var(--bg);background-attachment:fixed}
+.hidden{display:none!important}
+button,input{font-family:inherit}
+.gt{background:linear-gradient(180deg,#e0a020,#a86800);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--goldd)}
+.clay{background:var(--cl);border-radius:28px;box-shadow:var(--out),var(--in)}
+.btn{border:0;cursor:pointer;font-weight:800;font-size:12px;letter-spacing:.6px;color:#4a2f00;border-radius:14px;padding:0 16px;height:36px;background:linear-gradient(145deg,#ffd978,#f2b53a);box-shadow:4px 5px 10px rgba(190,125,20,.36),-3px -3px 7px rgba(255,255,255,.95),inset 2px 2px 4px rgba(255,255,255,.75),inset -3px -3px 6px rgba(190,120,0,.33)}
+.btn:active{transform:scale(.96)}
+.btn.ok{color:#04412a;background:linear-gradient(145deg,#a9f0cf,#3ecf9a);box-shadow:4px 5px 10px rgba(30,150,100,.34),-3px -3px 7px #fff,inset 2px 2px 4px rgba(255,255,255,.7),inset -3px -3px 6px rgba(0,110,70,.3)}
+.btn.no{color:#4a0010;background:linear-gradient(145deg,#ffb3bd,#ff6b81);box-shadow:4px 5px 10px rgba(200,50,80,.32),-3px -3px 7px #fff,inset 2px 2px 4px rgba(255,255,255,.7),inset -3px -3px 6px rgba(150,0,30,.3)}
+.btn.sm{height:30px;font-size:11px;padding:0 12px;border-radius:12px}
+input[type=text],input[type=password],input[type=email]{width:100%;height:50px;border-radius:19px;border:0;background:var(--bg);color:var(--ink);padding:0 18px;font-size:14px;font-weight:700;margin-bottom:12px;box-shadow:var(--press)}
+input:focus{outline:0;box-shadow:var(--press),0 0 0 3px rgba(242,181,58,.5)}
+input::placeholder{color:#a8977a}
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+#login .clay{width:100%;max-width:370px;padding:30px 24px;text-align:center}
+.brand{font-family:'Cinzel',serif;font-weight:800;font-size:22px;letter-spacing:2px;margin-bottom:12px}
+.wrap{max-width:920px;margin:0 auto;padding:16px 14px 50px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.tabs{display:flex;gap:10px;overflow-x:auto;padding:6px 4px 14px;margin-bottom:6px}
+.tabs button{flex:none;height:42px;padding:0 18px;border-radius:21px;border:0;color:var(--mut);font-weight:800;font-size:12px;letter-spacing:.5px;cursor:pointer;background:var(--cl);box-shadow:5px 5px 11px rgba(150,120,70,.3),-4px -4px 9px #fff,var(--in)}
+.tabs button.on{color:var(--goldd);background:var(--bg);box-shadow:var(--press)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px}
+.stat{padding:20px}
+.stat span{font-size:12px;color:var(--mut);font-weight:800;letter-spacing:1px}
+.stat b{display:block;font-family:'Fredoka',sans-serif;font-size:27px;font-weight:700;margin-top:6px;line-height:1.2}
+.stat small{display:block;font-size:12px;color:var(--mut);margin-top:3px}
+.box{padding:20px;margin-bottom:18px}
+.box h3{font-family:'Fredoka',sans-serif;font-size:16px;font-weight:600;letter-spacing:1px;margin-bottom:12px}
+.item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;margin-top:12px;border-radius:22px;background:var(--cl);box-shadow:5px 5px 12px rgba(150,120,70,.26),-4px -4px 9px #fff,var(--in);font-size:13px}
+.item .m{min-width:0;flex:1}
+.item .m b{font-weight:800}
+.item .m small{display:block;color:var(--mut);font-size:11.5px;margin-top:3px;word-break:break-all;line-height:1.5}
+.item .a{display:flex;gap:8px;flex:none;flex-wrap:wrap;justify-content:flex-end}
+.item.u{flex-direction:column;align-items:stretch}
+.item.u .a{justify-content:flex-start}
+.tag{font-size:10.5px;font-weight:800;padding:4px 11px;border-radius:14px;white-space:nowrap;box-shadow:inset 2px 2px 4px rgba(255,255,255,.7),inset -2px -2px 4px rgba(0,0,0,.08)}
+.t-ok{color:#117a52;background:#c9f3df}.t-bad{color:#b02640;background:#ffd3da}.t-p{color:#9a6200;background:#ffe9b3}
+.pimg{flex:none;width:52px;height:52px;border-radius:18px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;background:linear-gradient(145deg,#ff7a7a,#e0283c);box-shadow:3px 4px 9px rgba(200,40,60,.35),inset 2px 2px 4px rgba(255,255,255,.5)}
+.pimg img{width:100%;height:100%;object-fit:cover}
+.up{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.up .pimg{width:68px;height:68px;font-size:28px;background:var(--bg);color:var(--mut);box-shadow:var(--press)}
+.empty{text-align:center;color:var(--mut);font-size:13px;padding:18px}
+.cnt{font-size:12px;color:var(--mut);margin-bottom:4px}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);padding:13px 22px;border-radius:26px;background:var(--cl);font-size:13px;font-weight:800;box-shadow:8px 10px 22px rgba(120,90,40,.4),-4px -4px 10px #fff,var(--in);opacity:0;pointer-events:none;transition:.25s;z-index:9}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<section id="login" class="hidden">
+  <div class="clay">
+    <div class="brand gt">SHERU PLAN&#39;S</div>
+    <p style="color:var(--mut);font-size:13px;margin-bottom:16px">Admin login</p>
+    <input id="lEmail" type="email" placeholder="Admin email" autocomplete="username" autocapitalize="off">
+    <input id="lPass" type="password" placeholder="Password" autocomplete="current-password">
+    <button class="btn" id="lGo" style="width:100%;height:50px;font-size:14px;border-radius:19px">LOGIN</button>
+  </div>
+</section>
+
+<div id="panel" class="wrap hidden">
+  <div class="top"><div class="brand gt" style="margin:0;font-size:18px">SHERU PLAN&#39;S ADMIN</div><button class="btn no sm" id="logout">LOGOUT</button></div>
+  <div class="tabs" id="tabs">
+    <button data-t="dash" class="on">DASHBOARD</button><button data-t="users">USER&#39;S</button><button data-t="inr">INR DEPOSIT REQUEST</button><button data-t="usdt">USDT DEPOSIT REQUEST</button><button data-t="prod">ADD PRODUCT</button><button data-t="tasks">TASKS</button><button data-t="plans">PLANS</button>
+  </div>
+
+  <section id="dash"><div class="stats" id="stats"></div></section>
+
+  <section id="users" class="hidden"><div class="clay box"><h3 class="gt">USER&#39;S</h3><input id="uSearch" type="text" placeholder="Search name, email or code"><div class="cnt" id="uCnt"></div><div id="uList"></div></div></section>
+
+  <section id="inr" class="hidden"><div class="clay box"><h3 class="gt">INR DEPOSIT REQUEST</h3><div id="inrList"></div></div></section>
+  <section id="usdt" class="hidden"><div class="clay box"><h3 class="gt">USDT DEPOSIT REQUEST</h3><div id="usdtList"></div></div></section>
+
+  <section id="prod" class="hidden">
+    <div class="clay box">
+      <h3 class="gt">ADD PRODUCT</h3>
+      <div class="up"><div class="pimg" id="pPrev"><i class="fa-solid fa-image"></i></div><div><button class="btn" id="pPick" type="button"><i class="fa-solid fa-upload"></i> UPLOAD IMAGE</button><input id="pFile" type="file" accept="image/*" class="hidden"></div></div>
+      <input id="pName" type="text" maxlength="40" placeholder="NAME">
+      <input id="pPrice" type="text" inputmode="decimal" placeholder="PRICE in ₹ (USDT price = ₹ ÷ 100)">
+      <input id="pDays" type="text" inputmode="numeric" placeholder="DAYS (optional, leave empty for no expiry)">
+      <button class="btn" id="pAdd" type="button" style="width:100%;height:50px;font-size:14px;border-radius:19px">ADD</button>
+    </div>
+    <div class="clay box"><h3 class="gt">PRODUCTS</h3><div id="pList"></div></div>
+  </section>
+
+  <section id="tasks" class="hidden">
+    <div class="clay box">
+      <h3 class="gt">ADD TASK</h3>
+      <input id="tTitle" type="text" maxlength="40" placeholder="Task title (example: JOIN OUR CHANNEL)">
+      <input id="tUrl" type="text" placeholder="Task link (https://...)" autocapitalize="off" spellcheck="false">
+      <input id="tRew" type="text" inputmode="numeric" placeholder="Reward in coins (1 coin = ₹0.001 / $0.00001)">
+      <input id="tBtn" type="text" maxlength="12" placeholder="Button text (example: JOIN)">
+      <button class="btn" id="tAdd" style="width:100%;height:50px;font-size:14px;border-radius:19px">ADD TASK</button>
+    </div>
+    <div class="clay box"><h3 class="gt">TASKS ADDED BY ADMIN</h3><div id="aTasks"></div></div>
+    <div class="clay box"><h3 class="gt">TASKS CREATED BY USERS</h3><div id="uTasks"></div></div>
+  </section>
+
+  <section id="plans" class="hidden"><div class="clay box"><h3 class="gt">PLANS BOUGHT</h3><div id="plList"></div></div></section>
+</div>
+<div id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+(function(){
+'use strict';
+const ADMIN_EMAIL = 'ffmg723@gmail.com';
+const ADMIN_PASS  = 'MONU MANFORCE';
+
+var _P = [
+  "8IBlqMmC0bJIIt_AAXQZdY4UvHrmMpS4DySazIA",
+  "moc.ppaesaberif.09186-urehs",
+  "moc.oiesaberif.bdtr-tluafed-09186-urehs//:sptth",
+  "09186-urehs",
+  "ppa.egarotsesaberif.09186-urehs",
+  "214133668652",
+  "100f07de26f0656369330f:bew:214133668652:1"
+];
+function _d(s){ var o=''; for(var i=s.length-1;i>=0;i--) o += s.charAt(i); return o; }
+var db = null;
+try{
+  firebase.initializeApp({apiKey:_d(_P[0]),authDomain:_d(_P[1]),databaseURL:_d(_P[2]),projectId:_d(_P[3]),storageBucket:_d(_P[4]),messagingSenderId:_d(_P[5]),appId:_d(_P[6])});
+  db = firebase.database();
+}catch(e){ db = null; }
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let tt; const toast = m => { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 2800); };
+const fdate = t => t ? new Date(Number(t)).toLocaleString('en-IN', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}) : '-';
+const SYM = {INR:'₹', USDT:'$'};
+const OK = ['approved','success','completed','paid'], BAD = ['rejected','failed','declined','cancelled'];
+const okUrl = u => /^https?:\/\/[^\s]+$/i.test(String(u || ''));
+const okImg = s => /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(String(s || ''));
+const D = {users:{}, deps:{}, plans:{}, prods:{}, aT:{}, uT:{}};
+const vals = o => Object.keys(o || {}).map(k => Object.assign({_k:k}, o[k]));
+const st = r => { const s = String(r.status || '').toLowerCase(); return OK.indexOf(s) > -1 ? 'ok' : (BAD.indexOf(s) > -1 ? 'bad' : 'p'); };
+const DEFAULTS = [
+  {id:'p15', name:'15 DAYS SUBSCRIPTION',  priceInr:200,  u:2,  d:15, order:1},
+  {id:'p25', name:'25 DAYS SUBSCRIPTION',  priceInr:300,  u:3,  d:25, order:2},
+  {id:'m2',  name:'2 MONTHS SUBSCRIPTION', priceInr:500,  u:5,  m:2,  order:3},
+  {id:'m5',  name:'5 MONTHS SUBSCRIPTION', priceInr:1000, u:10, m:5,  order:4}
+];
+
+/* ---- login ---- */
+function openPanel(){ $('#login').classList.add('hidden'); $('#panel').classList.remove('hidden'); listen(); seed(); }
+$('#lGo').onclick = () => {
+  if($('#lEmail').value.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase() && $('#lPass').value === ADMIN_PASS){
+    try{ sessionStorage.setItem('sp_admin', '1'); }catch(e){}
+    openPanel();
+  }else toast('Wrong email or password');
+};
+$('#logout').onclick = () => { try{ sessionStorage.removeItem('sp_admin'); }catch(e){} location.reload(); };
+$('#lPass').addEventListener('keydown', e => { if(e.key === 'Enter') $('#lGo').click(); });
+const TABS = ['dash','users','inr','usdt','prod','tasks','plans'];
+$('#tabs').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
+  TABS.forEach(id => $('#' + id).classList.toggle('hidden', id !== b.dataset.t));
+});
+
+/* the 4 starting products are saved once, so the admin can delete them like any other product */
+function seed(){
+  if(!db) return;
+  db.ref('meta/productsSeeded').once('value').then(s => {
+    if(s.val() === true) return;
+    return db.ref('products').once('value').then(p => {
+      if(p.exists()) return db.ref('meta/productsSeeded').set(true);
+      const upd = {}; DEFAULTS.forEach(d => { const o = Object.assign({}, d); delete o.id; o.createdAt = Date.now(); upd['products/' + d.id] = o; });
+      upd['meta/productsSeeded'] = true; return db.ref().update(upd);
+    });
+  }).catch(() => {});
+}
+
+/* ---- live data ---- */
+function listen(){
+  if(!db) return toast('Database not connected');
+  [['users','users'],['depositRequests','deps'],['plans','plans'],['products','prods'],['adminTasks','aT'],['userTasks','uT']].forEach(a =>
+    db.ref(a[0]).on('value', s => { D[a[1]] = s.val() || {}; render(); }, err => toast('Database error: ' + err.message)));
+}
+function depRows(cur){
+  const ds = vals(D.deps).filter(r => r.currency === cur).sort((a, b) => (b.time || 0) - (a.time || 0));
+  return ds.length ? ds.slice(0, 120).map(r => {
+    const s = st(r);
+    return '<div class="item"><div class="m"><b>' + esc(r.name || 'User') + ' · ' + SYM[cur] + esc(r.amount) + '</b><small>' + fdate(r.time) + ' · ' + esc(r.method || '') + ' · ID: ' + esc(r.txId || '') + '</small></div>' +
+      '<div class="a">' + (s === 'p' ? '<button class="btn sm ok" data-dep="' + esc(r._k) + '" data-v="approved">APPROVE</button><button class="btn sm no" data-dep="' + esc(r._k) + '" data-v="rejected">REJECT</button>'
+      : '<span class="tag t-' + s + '">' + (s === 'ok' ? 'APPROVED' : 'REJECTED') + '</span>') + '</div></div>';
+  }).join('') : '<div class="empty">No ' + cur + ' deposit requests</div>';
+}
+function render(){
+  const us = vals(D.users), ds = vals(D.deps), prods = vals(D.prods);
+  // referral counts per referral code
+  const byCode = {};
+  us.forEach(u => { if(u.refBy){ const c = byCode[u.refBy] = byCode[u.refBy] || {ok:0, bad:0}; if((Number(u.deps) || 0) > 0) c.ok++; else c.bad++; } });
+  let top = null; us.forEach(u => { const c = byCode[u.code]; if(c && c.ok > 0 && (!top || c.ok > top.ok || (c.ok === top.ok && c.bad > top.bad))) top = {name:u.name || 'User', ok:c.ok, bad:c.bad}; });
+  const sum = {INR:0, USDT:0}; ds.filter(r => st(r) === 'ok').forEach(r => { if(sum[r.currency] != null) sum[r.currency] += Number(r.amount) || 0; });
+  $('#stats').innerHTML = [
+    ['TOTAL USER\'S', us.length, ''],
+    ['TOTAL SUCCESSFUL DEPOSIT', '₹' + sum.INR.toFixed(2), '$' + sum.USDT.toFixed(2) + ' USDT'],
+    ['TOTAL PRODUCTS', prods.length, ''],
+    ['TOP REFERRAL USER', top ? top.name : '-', top ? top.ok + ' successful · ' + top.bad + ' unsuccessful' : 'No successful referral yet']
+  ].map(a => '<div class="clay stat"><span>' + a[0] + '</span><b class="gt">' + esc(a[1]) + '</b><small>' + esc(a[2]) + '</small></div>').join('');
+
+  const q = ($('#uSearch').value || '').toLowerCase();
+  const list = us.filter(u => !q || [u.name, u.email, u.code].some(v => String(v || '').toLowerCase().includes(q))).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 300);
+  $('#uCnt').textContent = list.length + ' of ' + us.length + ' users';
+  $('#uList').innerHTML = list.length ? list.map(u => {
+    const blk = u.blocked === true || u.isBlocked === true || String(u.status || '').toLowerCase() === 'blocked', c = byCode[u.code] || {ok:0, bad:0};
+    return '<div class="item u"><div class="m"><b>' + esc(u.name || 'User') + '</b>' + (blk ? ' <span class="tag t-bad">BLOCKED</span>' : '') +
+      '<small>EMAIL: ' + esc(u.email || '-') + '</small><small>AMOUNT: ' + (SYM[u.currency] || '') + (Number(u.balance) || 0).toFixed(2) + (u.currency ? ' ' + esc(u.currency) : '') + '</small>' +
+      '<small>TOTAL REFERRAL: ' + (c.ok + c.bad) + ' · SUCCESSFUL ' + c.ok + ' · UNSUCCESSFUL ' + c.bad + ' · CODE ' + esc(u.code || '-') + '</small></div>' +
+      '<div class="a"><button class="btn sm ' + (blk ? 'ok' : 'no') + '" data-blk="' + esc(u._k) + '" data-v="' + (blk ? '0' : '1') + '">' + (blk ? 'UNBLOCK' : 'BLOCK') + '</button><button class="btn sm no" data-deluser="' + esc(u._k) + '">DELETE USER</button></div></div>';
+  }).join('') : '<div class="empty">No users</div>';
+
+  $('#inrList').innerHTML = depRows('INR'); $('#usdtList').innerHTML = depRows('USDT');
+
+  prods.sort((a, b) => (a.order || 0) - (b.order || 0));
+  $('#pList').innerHTML = prods.length ? prods.map(p =>
+    '<div class="item"><div class="pimg">' + (okImg(p.img) ? '<img src="' + p.img + '" alt="">' : '<i class="fa-brands fa-youtube"></i>') + '</div>' +
+    '<div class="m"><b>' + esc(p.name) + '</b><small>₹' + esc(p.priceInr) + ' · $' + esc(p.u) + (p.d ? ' · ' + esc(p.d) + ' days' : (p.m ? ' · ' + esc(p.m) + ' months' : ' · no expiry')) + '</small></div>' +
+    '<div class="a"><button class="btn sm no" data-del="products/' + esc(p._k) + '" data-what="product">DELETE</button></div></div>').join('') : '<div class="empty">No products. Add one above.</div>';
+
+  const pl = []; Object.keys(D.plans).forEach(u => vals(D.plans[u]).forEach(p => pl.push(p))); pl.sort((a, b) => (b.boughtAt || 0) - (a.boughtAt || 0));
+  $('#plList').innerHTML = pl.length ? pl.slice(0, 150).map(p =>
+    '<div class="item"><div class="m"><b>' + esc(p.userName || 'User') + ' · ' + esc(p.name) + '</b><small>Bought ' + fdate(p.boughtAt) + ' · valid till ' + (p.expiresAt ? fdate(p.expiresAt) : 'no expiry') + '</small></div><span class="tag t-p">' + (SYM[p.cur] || '') + esc(p.price) + '</span></div>').join('') : '<div class="empty">No plans bought yet</div>';
+
+  const aT = vals(D.aT).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  $('#aTasks').innerHTML = aT.length ? aT.map(t =>
+    '<div class="item"><div class="m"><b>' + esc(t.title) + '</b><small>' + esc(t.url) + ' · ' + esc(t.reward) + ' coin · button ' + esc(t.btn) + '</small></div><div class="a"><button class="btn sm no" data-del="adminTasks/' + esc(t._k) + '" data-what="task">DELETE</button></div></div>').join('') : '<div class="empty">No task added yet</div>';
+  const uT = vals(D.uT).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  $('#uTasks').innerHTML = uT.length ? uT.map(t =>
+    '<div class="item"><div class="m"><b>' + esc(t.name || 'User') + ' · ' + (Number(t.done) || 0) + '/' + esc(t.qty) + ' users</b><small>' + esc(t.url) + '</small></div><div class="a"><button class="btn sm no" data-del="userTasks/' + esc(t._k) + '" data-what="task">REMOVE</button></div></div>').join('') : '<div class="empty">No user tasks</div>';
+}
+$('#uSearch').addEventListener('input', render);
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b || !db) return;
+  if(b.dataset.dep){
+    db.ref('depositRequests/' + b.dataset.dep).update({status: b.dataset.v, reviewedAt: Date.now()}).then(() => toast(b.dataset.v === 'approved' ? 'Approved' : 'Rejected'));
+  }else if(b.dataset.blk){
+    const on = b.dataset.v === '1';
+    db.ref('users/' + b.dataset.blk).update({blocked: on, isBlocked: on, status: on ? 'blocked' : 'active'}).then(() => toast(on ? 'User blocked' : 'User unblocked'));
+  }else if(b.dataset.deluser){
+    if(!confirm('Delete this user? Their account, plans and rewards will be removed.')) return;
+    const id = b.dataset.deluser, upd = {}; upd['users/' + id] = null; upd['plans/' + id] = null; upd['refRewards/' + id] = null;
+    db.ref().update(upd).then(() => toast('User deleted'));
+  }else if(b.dataset.del){
+    if(confirm('Delete this ' + (b.dataset.what || 'item') + '? It disappears from the app for every user.')) db.ref(b.dataset.del).remove().then(() => toast('Deleted'));
+  }
+});
+
+/* ---- add product ---- */
+let pImg = '';
+$('#pPick').onclick = () => $('#pFile').click();
+$('#pFile').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0]; if(!f) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    const im = new Image();
+    im.onload = () => {
+      const S = 220, cv = document.createElement('canvas'); cv.width = cv.height = S;
+      const m = Math.min(im.width, im.height), sx = (im.width - m) / 2, sy = (im.height - m) / 2;
+      const cx = cv.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, S, S); cx.drawImage(im, sx, sy, m, m, 0, 0, S, S);
+      pImg = cv.toDataURL('image/jpeg', .82);
+      $('#pPrev').innerHTML = '<img src="' + pImg + '" alt="">';
+    };
+    im.onerror = () => toast('This image cannot be read');
+    im.src = rd.result;
+  };
+  rd.readAsDataURL(f);
+});
+$('#pAdd').onclick = () => {
+  const name = $('#pName').value.trim(), price = Number($('#pPrice').value.replace(/[^\d.]/g, '')), days = Math.floor(Number($('#pDays').value.replace(/[^\d]/g, ''))) || 0;
+  if(!pImg) return toast('Upload an image first');
+  if(name.length < 2) return toast('Enter the product name');
+  if(!(price > 0)) return toast('Enter the price in ₹');
+  const rec = {name, priceInr: +price.toFixed(2), u: +(price / 100).toFixed(4), img: pImg, order: Date.now(), createdAt: Date.now()};
+  if(days) rec.d = days;
+  db.ref('products').push(rec).then(() => {
+    pImg = ''; $('#pPrev').innerHTML = '<i class="fa-solid fa-image"></i>'; ['#pName','#pPrice','#pDays'].forEach(s => $(s).value = '');
+    toast('Product added. It shows on the app home page.');
+  }).catch(err => toast('Failed: ' + err.message));
+};
+
+/* ---- add task ---- */
+$('#tAdd').onclick = () => {
+  const title = $('#tTitle').value.trim(), url = $('#tUrl').value.trim(), rew = Math.floor(Number($('#tRew').value.replace(/[^\d]/g, ''))) || 0, btn = $('#tBtn').value.trim() || 'OPEN';
+  if(title.length < 2) return toast('Enter the task title');
+  if(!okUrl(url)) return toast('Enter a valid link starting with https://');
+  if(rew < 1) return toast('Enter the reward in coins');
+  db.ref('adminTasks').push({title, url, reward: rew, btn, createdAt: Date.now()}).then(() => {
+    ['#tTitle','#tUrl','#tRew','#tBtn'].forEach(s => $(s).value = ''); toast('Task added. It shows on every user device.');
+  }).catch(err => toast('Failed: ' + err.message));
+};
+
+try{ if(sessionStorage.getItem('sp_admin') === '1') openPanel(); else $('#login').classList.remove('hidden'); }catch(e){ $('#login').classList.remove('hidden'); }
+})();
+</script>
+</body>
+</html>
