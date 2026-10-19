@@ -78,7 +78,7 @@ input::placeholder{color:#7f9bbf}
 <div id="panel" class="wrap hidden">
   <div class="top"><div class="brand gt" style="margin:0;font-size:18px">AIR BET ADMIN</div><button class="btn no sm" id="logout">LOGOUT</button></div>
   <div class="tabs" id="tabs">
-    <button data-t="dash" class="on">DASHBOARD</button><button data-t="users">USER&#39;S</button><button data-t="inr">INR DEPOSIT REQUEST</button><button data-t="usdt">USDT DEPOSIT REQUEST</button><button data-t="tour">TOURNAMENTS</button><button data-t="tasks">TASKS</button>
+    <button data-t="dash" class="on">DASHBOARD</button><button data-t="users">USER&#39;S</button><button data-t="inr">INR DEPOSIT REQUEST</button><button data-t="usdt">USDT DEPOSIT REQUEST</button><button data-t="wd">WITHDRAW REQUEST</button><button data-t="tour">TOURNAMENTS</button><button data-t="tasks">TASKS</button>
   </div>
 
   <section id="dash"><div class="stats" id="stats"></div></section>
@@ -87,6 +87,8 @@ input::placeholder{color:#7f9bbf}
 
   <section id="inr" class="hidden"><div class="clay box"><h3 class="gt">INR DEPOSIT REQUEST</h3><div id="inrList"></div></div></section>
   <section id="usdt" class="hidden"><div class="clay box"><h3 class="gt">USDT DEPOSIT REQUEST</h3><div id="usdtList"></div></div></section>
+
+  <section id="wd" class="hidden"><div class="clay box"><h3 class="gt">WITHDRAW REQUEST</h3><div id="wdList"></div></div></section>
 
   <section id="tour" class="hidden">
     <div class="clay box">
@@ -152,7 +154,7 @@ const SYM = {INR:'₹', USDT:'$'};
 const OK = ['approved','success','completed','paid'], BAD = ['rejected','failed','declined','cancelled'];
 const okUrl = u => /^https?:\/\/[^\s]+$/i.test(String(u || ''));
 const okImg = s => /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(String(s || ''));
-const D = {users:{}, deps:{}, tours:{}, aT:{}, uT:{}};
+const D = {users:{}, deps:{}, wds:{}, tours:{}, aT:{}, uT:{}};
 const vals = o => Object.keys(o || {}).map(k => Object.assign({_k:k}, o[k]));
 const st = r => { const s = String(r.status || '').toLowerCase(); return OK.indexOf(s) > -1 ? 'ok' : (BAD.indexOf(s) > -1 ? 'bad' : 'p'); };
 
@@ -166,7 +168,7 @@ $('#lGo').onclick = () => {
 };
 $('#logout').onclick = () => { try{ sessionStorage.removeItem('sp_admin'); }catch(e){} location.reload(); };
 $('#lPass').addEventListener('keydown', e => { if(e.key === 'Enter') $('#lGo').click(); });
-const TABS = ['dash','users','inr','usdt','tour','tasks'];
+const TABS = ['dash','users','inr','usdt','wd','tour','tasks'];
 $('#tabs').addEventListener('click', e => {
   const b = e.target.closest('button'); if(!b) return;
   document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
@@ -177,7 +179,7 @@ $('#tabs').addEventListener('click', e => {
 /* ---- live data ---- */
 function listen(){
   if(!db) return toast('Database not connected');
-  [['users','users'],['depositRequests','deps'],['tournaments','tours'],['adminTasks','aT'],['userTasks','uT']].forEach(a =>
+  [['users','users'],['depositRequests','deps'],['withdrawRequests','wds'],['tournaments','tours'],['adminTasks','aT'],['userTasks','uT']].forEach(a =>
     db.ref(a[0]).on('value', s => { D[a[1]] = s.val() || {}; render(); }, err => toast('Database error: ' + err.message)));
 }
 function depRows(cur){
@@ -188,6 +190,18 @@ function depRows(cur){
       '<div class="a">' + (r.hasShot ? '<button class="btn sm" data-shot="' + esc(r._k) + '"><i class="fa-solid fa-image"></i> SCREENSHOT</button>' : '') + (s === 'p' ? '<button class="btn sm ok" data-dep="' + esc(r._k) + '" data-v="approved">APPROVE</button><button class="btn sm no" data-dep="' + esc(r._k) + '" data-v="rejected">REJECT</button>'
       : '<span class="tag t-' + s + '">' + (s === 'ok' ? 'APPROVED' : 'REJECTED') + '</span>') + '</div></div>';
   }).join('') : '<div class="empty">No ' + cur + ' deposit requests</div>';
+}
+function wdRows(){
+  const ws = vals(D.wds).sort((a, b) => (b.time || 0) - (a.time || 0));
+  return ws.length ? ws.slice(0, 150).map(r => {
+    const s = st(r), sy = SYM[r.currency] || '$';
+    return '<div class="item u"><div class="m"><b>NAME: ' + esc(r.name || 'User') + '</b>' +
+      '<small>ADDRESS: ' + esc(r.address || '') + '</small>' +
+      '<small>AMOUNT: <b>' + sy + esc(r.amount) + '</b>' + (r.currency === 'INR' ? ' (about $' + esc(r.usd) + ' USDT)' : ' USDT') + ' · ' + fdate(r.time) + '</small></div>' +
+      '<div class="a"><button class="btn sm" data-cp="' + esc(r.address || '') + '"><i class="fa-solid fa-copy"></i> COPY</button>' +
+      (s === 'p' ? '<button class="btn sm ok" data-wd="' + esc(r._k) + '" data-v="approved">APPROVE</button><button class="btn sm no" data-wd="' + esc(r._k) + '" data-v="rejected">REJECT</button>'
+      : '<span class="tag t-' + s + '">' + (s === 'ok' ? 'APPROVED' : 'REJECTED · REFUNDED') + '</span>') + '</div></div>';
+  }).join('') : '<div class="empty">No withdraw requests</div>';
 }
 function render(){
   const us = vals(D.users), ds = vals(D.deps), tours = vals(D.tours);
@@ -214,7 +228,7 @@ function render(){
       '<div class="a"><button class="btn sm ' + (blk ? 'ok' : 'no') + '" data-blk="' + esc(u._k) + '" data-v="' + (blk ? '0' : '1') + '">' + (blk ? 'UNBLOCK' : 'BLOCK') + '</button><button class="btn sm no" data-deluser="' + esc(u._k) + '">DELETE USER</button></div></div>';
   }).join('') : '<div class="empty">No users</div>';
 
-  $('#inrList').innerHTML = depRows('INR'); $('#usdtList').innerHTML = depRows('USDT');
+  $('#wdList').innerHTML = wdRows(); $('#inrList').innerHTML = depRows('INR'); $('#usdtList').innerHTML = depRows('USDT');
 
   tours.sort((a, b) => (b.startAt || 0) - (a.startAt || 0));
   const now = Date.now(), LM = 6 * 36e5;
@@ -246,6 +260,12 @@ document.addEventListener('click', e => {
     db.ref('depShots/' + b.dataset.shot).once('value').then(s => { const v = s.val(); if(!okImg(v)) return toast('No screenshot found'); $('#shotView img').src = v; $('#shotView').classList.remove('hidden'); });
   }else if(b.dataset.dep){
     db.ref('depositRequests/' + b.dataset.dep).update({status: b.dataset.v, reviewedAt: Date.now()}).then(() => toast(b.dataset.v === 'approved' ? 'Approved' : 'Rejected'));
+  }else if(b.dataset.wd){
+    db.ref('withdrawRequests/' + b.dataset.wd).update({status: b.dataset.v, reviewedAt: Date.now()}).then(() => toast(b.dataset.v === 'approved' ? 'Withdrawal approved' : 'Withdrawal rejected. The user is refunded.'));
+  }else if(b.dataset.cp){
+    const t = b.dataset.cp, ok = () => toast('Address copied');
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, () => toast('Copy failed'));
+    else{ const i = document.createElement('input'); i.value = t; document.body.appendChild(i); i.select(); try{ document.execCommand('copy'); ok(); }catch(x){ toast('Copy failed'); } i.remove(); }
   }else if(b.dataset.blk){
     const on = b.dataset.v === '1';
     db.ref('users/' + b.dataset.blk).update({blocked: on, isBlocked: on, status: on ? 'blocked' : 'active'}).then(() => toast(on ? 'User blocked' : 'User unblocked'));
